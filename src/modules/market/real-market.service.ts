@@ -53,17 +53,27 @@ export class RealMarketService {
       const indicators = result.indicators.quote[0];
       const timestamp = result.timestamp[result.timestamp.length - 1];
       
+      // Validate required data exists
+      if (!meta.regularMarketPrice || !meta.previousClose) {
+        throw new Error(`Missing price data for symbol: ${symbol}`);
+      }
+      
       // Get the latest price data
       const currentPrice = meta.regularMarketPrice;
       const previousClose = meta.previousClose;
       const change = currentPrice - previousClose;
       const changePercent = (change / previousClose) * 100;
       
-      // Get volume and other data
-      const volume = indicators.volume[indicators.volume.length - 1] || 0;
-      const high = Math.max(...indicators.high.filter((h: number) => h !== null));
-      const low = Math.min(...indicators.low.filter((l: number) => l !== null));
-      const open = indicators.open[indicators.open.length - 1] || currentPrice;
+      // Get volume and other data with better error handling
+      const volume = indicators.volume?.[indicators.volume.length - 1] || 0;
+      
+      // Handle high/low data more safely
+      const validHighs = indicators.high?.filter((h: number) => h !== null && !isNaN(h)) || [];
+      const validLows = indicators.low?.filter((l: number) => l !== null && !isNaN(l)) || [];
+      
+      const high = validHighs.length > 0 ? Math.max(...validHighs) : currentPrice;
+      const low = validLows.length > 0 ? Math.min(...validLows) : currentPrice;
+      const open = indicators.open?.[indicators.open.length - 1] || currentPrice;
       
       // Calculate market cap (approximate - would need shares outstanding for exact)
       const marketCap = currentPrice * (volume * 100); // Rough estimate
@@ -127,11 +137,11 @@ export class RealMarketService {
   }
 
   async getRealTopGainers(limit: number = 10): Promise<StockPrice[]> {
-    // Popular stocks to check for gainers
+    // Popular stocks to check for gainers (updated symbols)
     const popularStocks = [
       'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'TSLA', 'META', 'NVDA', 'NFLX', 'AMD', 'INTC',
-      'CRM', 'ADBE', 'PYPL', 'UBER', 'LYFT', 'SNAP', 'PINS', 'ZM', 'SHOP', 'SQ',
-      'ROKU', 'CRWD', 'OKTA', 'DOCU', 'PLTR', 'COIN', 'HOOD', 'RBLX', 'SPOT', 'TWTR'
+      'CRM', 'ADBE', 'PYPL', 'UBER', 'LYFT', 'SNAP', 'PINS', 'ZM', 'SHOP', 'BLOCK', // SQ changed to BLOCK
+      'ROKU', 'CRWD', 'OKTA', 'DOCU', 'PLTR', 'COIN', 'HOOD', 'RBLX', 'SPOT' // Removed TWTR (now private)
     ];
 
     try {
@@ -151,11 +161,11 @@ export class RealMarketService {
   }
 
   async getRealTopLosers(limit: number = 10): Promise<StockPrice[]> {
-    // Popular stocks to check for losers
+    // Popular stocks to check for losers (updated symbols)
     const popularStocks = [
       'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'TSLA', 'META', 'NVDA', 'NFLX', 'AMD', 'INTC',
-      'CRM', 'ADBE', 'PYPL', 'UBER', 'LYFT', 'SNAP', 'PINS', 'ZM', 'SHOP', 'SQ',
-      'ROKU', 'CRWD', 'OKTA', 'DOCU', 'PLTR', 'COIN', 'HOOD', 'RBLX', 'SPOT', 'TWTR'
+      'CRM', 'ADBE', 'PYPL', 'UBER', 'LYFT', 'SNAP', 'PINS', 'ZM', 'SHOP', 'BLOCK', // SQ changed to BLOCK
+      'ROKU', 'CRWD', 'OKTA', 'DOCU', 'PLTR', 'COIN', 'HOOD', 'RBLX', 'SPOT' // Removed TWTR (now private)
     ];
 
     try {
@@ -238,7 +248,7 @@ export class RealMarketService {
   private getMockTopGainers(limit: number): StockPrice[] {
     const symbols = [
       'AAPL', 'MSFT', 'GOOGL', 'TSLA', 'AMZN', 'NVDA', 'META', 'NFLX', 'UBER', 'LYFT',
-      'SNAP', 'PINS', 'ZM', 'SHOP', 'SQ', 'ROKU', 'CRWD', 'OKTA', 'ZM', 'DOCU',
+      'SNAP', 'PINS', 'ZM', 'SHOP', 'BLOCK', 'ROKU', 'CRWD', 'OKTA', 'DOCU', 'PLTR',
     ];
 
     return symbols.slice(0, limit).map(symbol => this.getMockStockPrice(symbol));
@@ -246,8 +256,8 @@ export class RealMarketService {
 
   private getMockTopLosers(limit: number): StockPrice[] {
     const symbols = [
-      'META', 'NFLX', 'UBER', 'LYFT', 'SNAP', 'PINS', 'ZM', 'SHOP', 'SQ', 'ROKU',
-      'CRWD', 'OKTA', 'DOCU', 'PLTR', 'COIN', 'HOOD', 'RBLX', 'SPOT', 'TWTR', 'SNAP',
+      'META', 'NFLX', 'UBER', 'LYFT', 'SNAP', 'PINS', 'ZM', 'SHOP', 'BLOCK', 'ROKU',
+      'CRWD', 'OKTA', 'DOCU', 'PLTR', 'COIN', 'HOOD', 'RBLX', 'SPOT', 'SNAP',
     ];
 
     return symbols.slice(0, limit).map(symbol => this.getMockStockPrice(symbol));
