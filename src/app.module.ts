@@ -7,6 +7,7 @@ import { ThrottlerGuard } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MarketModule } from '@/modules/market/market.module';
+import { NewsModule } from '@/modules/news/news.module';
 import configuration from '@/config/configuration';
 
 @Module({
@@ -28,6 +29,7 @@ import configuration from '@/config/configuration';
       max: 1000,
     }),
     MarketModule,
+    NewsModule,
   ],
   controllers: [AppController],
   providers: [
