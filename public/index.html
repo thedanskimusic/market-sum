@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Summary Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-chart-line"></i>
+                    <h1>Market Summary</h1>
+                </div>
+                <div class="header-actions">
+                    <button class="refresh-btn" onclick="refreshAllData()">
+                        <i class="fas fa-sync-alt"></i>
+                        Refresh
+                    </button>
+                    <div class="last-updated">
+                        Last updated: <span id="lastUpdated">--</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Market Overview Section -->
+            <section class="market-overview">
+                <h2><i class="fas fa-globe"></i> Market Overview</h2>
+                <div class="indices-grid" id="indicesGrid">
+                    <div class="loading">Loading market indices...</div>
+                </div>
+            </section>
+
+            <!-- Stock Performance Section -->
+            <section class="stock-performance">
+                <div class="performance-tabs">
+                    <button class="tab-btn active" onclick="showTab('gainers')">
+                        <i class="fas fa-arrow-up"></i> Top Gainers
+                    </button>
+                    <button class="tab-btn" onclick="showTab('losers')">
+                        <i class="fas fa-arrow-down"></i> Top Losers
+                    </button>
+                    <button class="tab-btn" onclick="showTab('active')">
+                        <i class="fas fa-chart-bar"></i> Most Active
+                    </button>
+                </div>
+                
+                <div class="tab-content">
+                    <div id="gainers-tab" class="tab-pane active">
+                        <div class="stocks-grid" id="gainersGrid">
+                            <div class="loading">Loading top gainers...</div>
+                        </div>
+                    </div>
+                    <div id="losers-tab" class="tab-pane">
+                        <div class="stocks-grid" id="losersGrid">
+                            <div class="loading">Loading top losers...</div>
+                        </div>
+                    </div>
+                    <div id="active-tab" class="tab-pane">
+                        <div class="stocks-grid" id="activeGrid">
+                            <div class="loading">Loading most active stocks...</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Australian Market Section -->
+            <section class="australian-market">
+                <h2><i class="fas fa-flag"></i> 🇦🇺 Australian Market</h2>
+                
+                <!-- ASX Indices -->
+                <div class="australian-indices">
+                    <h3><i class="fas fa-chart-line"></i> ASX Indices</h3>
+                    <div class="indices-grid" id="asxIndicesGrid">
+                        <div class="loading">Loading ASX indices...</div>
+                    </div>
+                </div>
+
+                <!-- Australian Stock Performance -->
+                <div class="australian-performance">
+                    <div class="performance-tabs">
+                        <button class="tab-btn active" onclick="showAustralianTab('asxGainers')">
+                            <i class="fas fa-arrow-up"></i> ASX Top Gainers
+                        </button>
+                        <button class="tab-btn" onclick="showAustralianTab('asxLosers')">
+                            <i class="fas fa-arrow-down"></i> ASX Top Losers
+                        </button>
+                        <button class="tab-btn" onclick="showAustralianTab('majorAsx')">
+                            <i class="fas fa-star"></i> Major ASX Stocks
+                        </button>
+                    </div>
+                    
+                    <div class="tab-content">
+                        <div id="asxGainers-tab" class="tab-pane active">
+                            <div class="stocks-grid" id="asxGainersGrid">
+                                <div class="loading">Loading ASX top gainers...</div>
+                            </div>
+                        </div>
+                        <div id="asxLosers-tab" class="tab-pane">
+                            <div class="stocks-grid" id="asxLosersGrid">
+                                <div class="loading">Loading ASX top losers...</div>
+                            </div>
+                        </div>
+                        <div id="majorAsx-tab" class="tab-pane">
+                            <div class="stocks-grid" id="majorAsxGrid">
+                                <div class="loading">Loading major ASX stocks...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- News Section -->
+            <section class="news-section">
+                <div class="news-header">
+                    <h2><i class="fas fa-newspaper"></i> Latest News</h2>
+                    <div class="news-filters">
+                        <button class="filter-btn active" onclick="filterNews('all')">All</button>
+                        <button class="filter-btn" onclick="filterNews('business')">Business</button>
+                        <button class="filter-btn" onclick="filterNews('technology')">Technology</button>
+                        <button class="filter-btn" onclick="filterNews('markets')">Markets</button>
+                    </div>
+                </div>
+                <div class="news-grid" id="newsGrid">
+                    <div class="loading">Loading news...</div>
+                </div>
+            </section>
+
+            <!-- Stock Search Section -->
+            <section class="stock-search">
+                <h2><i class="fas fa-search"></i> Stock Lookup</h2>
+                <div class="search-container">
+                    <input 
+                        type="text" 
+                        id="stockSearch" 
+                        placeholder="Enter stock symbol (e.g., AAPL, MSFT, GOOGL)"
+                        onkeypress="handleStockSearch(event)"
+                    >
+                    <button onclick="searchStock()">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                <div id="stockResult" class="stock-result"></div>
+            </section>
+        </main>
+
+        <!-- Loading Overlay -->
+        <div id="loadingOverlay" class="loading-overlay">
+            <div class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Loading data...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -228,4 +228,60 @@ export class MarketController {
       );
     }
   }
+
+  @Get('australia')
+  @ApiOperation({ summary: 'Get Australian market data including ASX indices and major stocks' })
+  @ApiResponse({
+    status: 200,
+    description: 'Australian market data retrieved successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        success: { type: 'boolean' },
+        data: {
+          type: 'object',
+          properties: {
+            asxIndices: {
+              type: 'array',
+              items: { $ref: '#/components/schemas/MarketIndex' }
+            },
+            topAsxGainers: {
+              type: 'array',
+              items: { $ref: '#/components/schemas/StockPrice' }
+            },
+            topAsxLosers: {
+              type: 'array',
+              items: { $ref: '#/components/schemas/StockPrice' }
+            },
+            majorAsxStocks: {
+              type: 'array',
+              items: { $ref: '#/components/schemas/StockPrice' }
+            }
+          }
+        },
+        timestamp: { type: 'string', format: 'date-time' },
+      },
+    },
+  })
+  async getAustralianMarketData(): Promise<ApiResponseType<{
+    asxIndices: MarketIndex[];
+    topAsxGainers: StockPrice[];
+    topAsxLosers: StockPrice[];
+    majorAsxStocks: StockPrice[];
+  }>> {
+    try {
+      const data = await this.marketService.getAustralianMarketData();
+      return {
+        success: true,
+        data,
+        timestamp: new Date(),
+      };
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to fetch Australian market data';
+      throw new HttpException(
+        errorMessage,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 }
