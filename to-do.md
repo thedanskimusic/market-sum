@@ -204,7 +204,8 @@ A real-time market summary application that aggregates data from various financi
 
 ### ✅ **Completed Features**
 - **Real-time Stock Data**: Integrated Yahoo Finance API for live stock prices
-- **Market Indices**: S&P 500, NASDAQ, ASX 200, Dow Jones, FTSE 100
+- **Market Indices**: S&P 500, NASDAQ, ASX 200, Dow Jones, FTSE 100, Nikkei 225, Hang Seng
+- **Australian Market Data**: Complete ASX integration with indices and major stocks
 - **News Integration**: Reuters RSS feed with sentiment analysis
 - **Modern Web UI**: Responsive dashboard with real-time updates
 - **API Endpoints**: Complete RESTful API with Swagger documentation
@@ -216,16 +217,22 @@ A real-time market summary application that aggregates data from various financi
 - **News**: Reuters RSS feeds (real-time)
 - **Fallback**: Mock data when APIs are unavailable
 
+### 🇦🇺 **Australian Market Coverage**
+- **ASX Indices**: ASX 200, ASX 200 Resources, ASX 200 Financials, ASX All Ordinaries, ASX Small Ordinaries, ASX Mid Cap 50
+- **Major ASX Stocks**: BHP, CBA, CSL, NAB, WBC, ANZ, MQG, WES, WOW, TLS, RIO, FMG, TCL, GMG, TWE, QBE, AMP, ORG, STO, SUN, IAG, REA, NCM, NVT
+- **Australian UI Section**: Dedicated Australian market dashboard with 🇦🇺 styling
+
 ### 🚀 **Live Features**
-- Real stock prices and market data
-- Top gainers and losers tracking
+- Real stock prices and market data (Global + Australian)
+- Top gainers and losers tracking (Global + ASX)
 - Financial news with sentiment analysis
 - Individual stock lookup
-- Market indices overview
+- Market indices overview (Global + ASX)
 - Responsive web dashboard
+- Australian market data with special styling
 
 ---
 
 **Last Updated**: August 10, 2025
-**Status**: Phase 5 Complete - Frontend with Real Data ✅
+**Status**: Phase 5 Complete - Frontend with Real Data & Australian Market Integration ✅
 **Next Phase**: Advanced Features & Real-time WebSockets

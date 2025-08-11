@@ -102,11 +102,21 @@ export class RealMarketService {
 
   async getRealMarketIndices(): Promise<MarketIndex[]> {
     const indices = [
+      // Global Indices
       { symbol: '^GSPC', name: 'S&P 500' },
-      { symbol: '^AXJO', name: 'ASX 200' },
       { symbol: '^IXIC', name: 'NASDAQ' },
       { symbol: '^DJI', name: 'Dow Jones' },
       { symbol: '^FTSE', name: 'FTSE 100' },
+      { symbol: '^N225', name: 'Nikkei 225' },
+      { symbol: '^HSI', name: 'Hang Seng' },
+      
+      // Australian Indices (Enhanced)
+      { symbol: '^AXJO', name: 'ASX 200' },
+      { symbol: '^AXJR', name: 'ASX 200 Resources' },
+      { symbol: '^AXJF', name: 'ASX 200 Financials' },
+      { symbol: '^AXAO', name: 'ASX All Ordinaries' },
+      { symbol: '^AXSO', name: 'ASX Small Ordinaries' },
+      { symbol: '^AXMD', name: 'ASX Mid Cap 50' },
     ];
 
     try {
@@ -137,11 +147,17 @@ export class RealMarketService {
   }
 
   async getRealTopGainers(limit: number = 10): Promise<StockPrice[]> {
-    // Popular stocks to check for gainers (updated symbols)
+    // Popular stocks to check for gainers (Global + Australian)
     const popularStocks = [
+      // Global Tech & Major Stocks
       'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'TSLA', 'META', 'NVDA', 'NFLX', 'AMD', 'INTC',
-      'CRM', 'ADBE', 'PYPL', 'UBER', 'LYFT', 'SNAP', 'PINS', 'ZM', 'SHOP', 'BLOCK', // SQ changed to BLOCK
-      'ROKU', 'CRWD', 'OKTA', 'DOCU', 'PLTR', 'COIN', 'HOOD', 'RBLX', 'SPOT' // Removed TWTR (now private)
+      'CRM', 'ADBE', 'PYPL', 'UBER', 'LYFT', 'SNAP', 'PINS', 'ZM', 'SHOP', 'BLOCK',
+      'ROKU', 'CRWD', 'OKTA', 'DOCU', 'PLTR', 'COIN', 'HOOD', 'RBLX', 'SPOT',
+      
+      // Major ASX Stocks (Top 20 by market cap)
+      'BHP.AX', 'CBA.AX', 'CSL.AX', 'NAB.AX', 'WBC.AX', 'ANZ.AX', 'MQG.AX', 'WES.AX',
+      'WOW.AX', 'TLS.AX', 'RIO.AX', 'FMG.AX', 'TCL.AX', 'GMG.AX', 'TWE.AX', 'QBE.AX',
+      'AMP.AX', 'ORG.AX', 'STO.AX', 'SUN.AX', 'IAG.AX', 'REA.AX', 'NCM.AX', 'NVT.AX'
     ];
 
     try {
@@ -161,11 +177,17 @@ export class RealMarketService {
   }
 
   async getRealTopLosers(limit: number = 10): Promise<StockPrice[]> {
-    // Popular stocks to check for losers (updated symbols)
+    // Popular stocks to check for losers (Global + Australian)
     const popularStocks = [
+      // Global Tech & Major Stocks
       'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'TSLA', 'META', 'NVDA', 'NFLX', 'AMD', 'INTC',
-      'CRM', 'ADBE', 'PYPL', 'UBER', 'LYFT', 'SNAP', 'PINS', 'ZM', 'SHOP', 'BLOCK', // SQ changed to BLOCK
-      'ROKU', 'CRWD', 'OKTA', 'DOCU', 'PLTR', 'COIN', 'HOOD', 'RBLX', 'SPOT' // Removed TWTR (now private)
+      'CRM', 'ADBE', 'PYPL', 'UBER', 'LYFT', 'SNAP', 'PINS', 'ZM', 'SHOP', 'BLOCK',
+      'ROKU', 'CRWD', 'OKTA', 'DOCU', 'PLTR', 'COIN', 'HOOD', 'RBLX', 'SPOT',
+      
+      // Major ASX Stocks (Top 20 by market cap)
+      'BHP.AX', 'CBA.AX', 'CSL.AX', 'NAB.AX', 'WBC.AX', 'ANZ.AX', 'MQG.AX', 'WES.AX',
+      'WOW.AX', 'TLS.AX', 'RIO.AX', 'FMG.AX', 'TCL.AX', 'GMG.AX', 'TWE.AX', 'QBE.AX',
+      'AMP.AX', 'ORG.AX', 'STO.AX', 'SUN.AX', 'IAG.AX', 'REA.AX', 'NCM.AX', 'NVT.AX'
     ];
 
     try {
@@ -181,6 +203,92 @@ export class RealMarketService {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       this.logger.error('Failed to fetch top losers:', errorMessage);
       return this.getMockTopLosers(limit);
+    }
+  }
+
+  // Australian-specific market data
+  async getAustralianMarketData(): Promise<{
+    asxIndices: MarketIndex[];
+    topAsxGainers: StockPrice[];
+    topAsxLosers: StockPrice[];
+    majorAsxStocks: StockPrice[];
+  }> {
+    try {
+      // ASX-specific indices
+      const asxIndices = [
+        { symbol: '^AXJO', name: 'ASX 200' },
+        { symbol: '^AXJR', name: 'ASX 200 Resources' },
+        { symbol: '^AXJF', name: 'ASX 200 Financials' },
+        { symbol: '^AXAO', name: 'ASX All Ordinaries' },
+        { symbol: '^AXSO', name: 'ASX Small Ordinaries' },
+        { symbol: '^AXMD', name: 'ASX Mid Cap 50' },
+      ];
+
+      // Major ASX stocks (Top 10 by market cap)
+      const majorAsxStocks = [
+        'BHP.AX', 'CBA.AX', 'CSL.AX', 'NAB.AX', 'WBC.AX', 
+        'ANZ.AX', 'MQG.AX', 'WES.AX', 'WOW.AX', 'TLS.AX'
+      ];
+
+      // Fetch ASX indices
+      const asxIndicesPromises = asxIndices.map(async (index) => {
+        try {
+          const stockData = await this.getRealStockPrice(index.symbol);
+          return {
+            name: index.name,
+            symbol: index.symbol,
+            value: stockData.price,
+            change: stockData.change,
+            changePercent: stockData.changePercent,
+            timestamp: stockData.timestamp,
+          };
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+          this.logger.error(`Failed to fetch ASX index ${index.symbol}:`, errorMessage);
+          return this.getMockIndex(index.symbol, index.name);
+        }
+      });
+
+      // Fetch major ASX stocks
+      const majorStocksPromises = majorAsxStocks.map(symbol => this.getRealStockPrice(symbol));
+
+      const [asxIndicesData, majorStocksData] = await Promise.all([
+        Promise.all(asxIndicesPromises),
+        Promise.all(majorStocksPromises)
+      ]);
+
+      // Get top gainers and losers from ASX stocks
+      const topAsxGainers = majorStocksData
+        .filter(stock => stock.changePercent > 0)
+        .sort((a, b) => b.changePercent - a.changePercent)
+        .slice(0, 5);
+
+      const topAsxLosers = majorStocksData
+        .filter(stock => stock.changePercent < 0)
+        .sort((a, b) => a.changePercent - b.changePercent)
+        .slice(0, 5);
+
+      return {
+        asxIndices: asxIndicesData,
+        topAsxGainers,
+        topAsxLosers,
+        majorAsxStocks: majorStocksData,
+      };
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      this.logger.error('Failed to fetch Australian market data:', errorMessage);
+      
+      // Return mock data as fallback
+      return {
+        asxIndices: [
+          this.getMockIndex('^AXJO', 'ASX 200'),
+          this.getMockIndex('^AXJR', 'ASX 200 Resources'),
+          this.getMockIndex('^AXJF', 'ASX 200 Financials'),
+        ],
+        topAsxGainers: this.getMockTopGainers(5).map(stock => ({ ...stock, symbol: stock.symbol + '.AX' })),
+        topAsxLosers: this.getMockTopLosers(5).map(stock => ({ ...stock, symbol: stock.symbol + '.AX' })),
+        majorAsxStocks: this.getMockTopGainers(10).map(stock => ({ ...stock, symbol: stock.symbol + '.AX' })),
+      };
     }
   }
 
@@ -247,8 +355,12 @@ export class RealMarketService {
 
   private getMockTopGainers(limit: number): StockPrice[] {
     const symbols = [
+      // Global stocks
       'AAPL', 'MSFT', 'GOOGL', 'TSLA', 'AMZN', 'NVDA', 'META', 'NFLX', 'UBER', 'LYFT',
       'SNAP', 'PINS', 'ZM', 'SHOP', 'BLOCK', 'ROKU', 'CRWD', 'OKTA', 'DOCU', 'PLTR',
+      // Australian stocks
+      'BHP.AX', 'CBA.AX', 'CSL.AX', 'NAB.AX', 'WBC.AX', 'ANZ.AX', 'MQG.AX', 'WES.AX',
+      'WOW.AX', 'TLS.AX', 'RIO.AX', 'FMG.AX', 'TCL.AX', 'GMG.AX', 'TWE.AX', 'QBE.AX',
     ];
 
     return symbols.slice(0, limit).map(symbol => this.getMockStockPrice(symbol));
@@ -256,8 +368,12 @@ export class RealMarketService {
 
   private getMockTopLosers(limit: number): StockPrice[] {
     const symbols = [
+      // Global stocks
       'META', 'NFLX', 'UBER', 'LYFT', 'SNAP', 'PINS', 'ZM', 'SHOP', 'BLOCK', 'ROKU',
-      'CRWD', 'OKTA', 'DOCU', 'PLTR', 'COIN', 'HOOD', 'RBLX', 'SPOT', 'SNAP',
+      'CRWD', 'OKTA', 'DOCU', 'PLTR', 'COIN', 'HOOD', 'RBLX', 'SPOT',
+      // Australian stocks
+      'BHP.AX', 'CBA.AX', 'CSL.AX', 'NAB.AX', 'WBC.AX', 'ANZ.AX', 'MQG.AX', 'WES.AX',
+      'WOW.AX', 'TLS.AX', 'RIO.AX', 'FMG.AX', 'TCL.AX', 'GMG.AX', 'TWE.AX', 'QBE.AX',
     ];
 
     return symbols.slice(0, limit).map(symbol => this.getMockStockPrice(symbol));

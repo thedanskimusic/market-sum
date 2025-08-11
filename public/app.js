@@ -132,14 +132,60 @@ async function loadMostActive() {
     }
 }
 
-function createStockCard(stock) {
+async function loadAustralianMarketData() {
+    try {
+        const response = await fetchAPI('/market/australia');
+        const data = response.data;
+        
+        // Load ASX indices
+        const asxIndicesGrid = document.getElementById('asxIndicesGrid');
+        if (asxIndicesGrid) {
+            asxIndicesGrid.innerHTML = data.asxIndices.map(index => `
+                <div class="index-card australian">
+                    <div class="index-name">
+                        <span class="flag">🇦🇺</span> ${index.name}
+                    </div>
+                    <div class="index-value">${index.value.toFixed(2)}</div>
+                    <div class="index-change ${index.changePercent >= 0 ? 'positive' : 'negative'}">
+                        <i class="fas fa-${index.changePercent >= 0 ? 'arrow-up' : 'arrow-down'}"></i>
+                        ${formatCurrency(Math.abs(index.change))} (${formatPercentage(index.changePercent)})
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // Load top ASX gainers
+        const asxGainersGrid = document.getElementById('asxGainersGrid');
+        if (asxGainersGrid) {
+            asxGainersGrid.innerHTML = data.topAsxGainers.map(stock => createStockCard(stock, true)).join('');
+        }
+        
+        // Load top ASX losers
+        const asxLosersGrid = document.getElementById('asxLosersGrid');
+        if (asxLosersGrid) {
+            asxLosersGrid.innerHTML = data.topAsxLosers.map(stock => createStockCard(stock, true)).join('');
+        }
+        
+        // Load major ASX stocks
+        const majorAsxGrid = document.getElementById('majorAsxGrid');
+        if (majorAsxGrid) {
+            majorAsxGrid.innerHTML = data.majorAsxStocks.map(stock => createStockCard(stock, true)).join('');
+        }
+    } catch (error) {
+        console.error('Failed to load Australian market data:', error);
+        showError('Failed to load Australian market data', 'asxIndicesGrid');
+    }
+}
+
+function createStockCard(stock, isAustralian = false) {
     const changeClass = stock.changePercent >= 0 ? 'positive' : 'negative';
     const changeIcon = stock.changePercent >= 0 ? 'arrow-up' : 'arrow-down';
+    const flag = isAustralian ? '<span class="flag">🇦🇺</span>' : '';
     
     return `
-        <div class="stock-card">
+        <div class="stock-card ${isAustralian ? 'australian' : ''}">
             <div class="stock-header">
-                <div class="stock-symbol">${stock.symbol}</div>
+                <div class="stock-symbol">${flag} ${stock.symbol}</div>
                 <div class="stock-price">${formatCurrency(stock.price)}</div>
             </div>
             <div class="stock-change ${changeClass}">
@@ -267,6 +313,24 @@ function showTab(tabName) {
     event.target.classList.add('active');
 }
 
+function showAustralianTab(tabName) {
+    // Hide all Australian tab panes
+    document.querySelectorAll('.australian-performance .tab-pane').forEach(pane => {
+        pane.classList.remove('active');
+    });
+    
+    // Remove active class from all Australian tab buttons
+    document.querySelectorAll('.australian-performance .tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    // Show selected tab pane
+    document.getElementById(`${tabName}-tab`).classList.add('active');
+    
+    // Add active class to clicked button
+    event.target.classList.add('active');
+}
+
 function filterNews(category) {
     currentNewsCategory = category;
     
@@ -292,6 +356,7 @@ async function refreshAllData() {
             loadTopGainers(),
             loadTopLosers(),
             loadMostActive(),
+            loadAustralianMarketData(),
             loadNews()
         ]);
         
@@ -329,6 +394,7 @@ document.addEventListener('DOMContentLoaded', init);
 // Global functions for HTML onclick handlers
 window.refreshAllData = refreshAllData;
 window.showTab = showTab;
+window.showAustralianTab = showAustralianTab;
 window.filterNews = filterNews;
 window.searchStock = searchStock;
 window.handleStockSearch = handleStockSearch;

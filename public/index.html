@@ -72,6 +72,52 @@
                 </div>
             </section>
 
+            <!-- Australian Market Section -->
+            <section class="australian-market">
+                <h2><i class="fas fa-flag"></i> 🇦🇺 Australian Market</h2>
+                
+                <!-- ASX Indices -->
+                <div class="australian-indices">
+                    <h3><i class="fas fa-chart-line"></i> ASX Indices</h3>
+                    <div class="indices-grid" id="asxIndicesGrid">
+                        <div class="loading">Loading ASX indices...</div>
+                    </div>
+                </div>
+
+                <!-- Australian Stock Performance -->
+                <div class="australian-performance">
+                    <div class="performance-tabs">
+                        <button class="tab-btn active" onclick="showAustralianTab('asxGainers')">
+                            <i class="fas fa-arrow-up"></i> ASX Top Gainers
+                        </button>
+                        <button class="tab-btn" onclick="showAustralianTab('asxLosers')">
+                            <i class="fas fa-arrow-down"></i> ASX Top Losers
+                        </button>
+                        <button class="tab-btn" onclick="showAustralianTab('majorAsx')">
+                            <i class="fas fa-star"></i> Major ASX Stocks
+                        </button>
+                    </div>
+                    
+                    <div class="tab-content">
+                        <div id="asxGainers-tab" class="tab-pane active">
+                            <div class="stocks-grid" id="asxGainersGrid">
+                                <div class="loading">Loading ASX top gainers...</div>
+                            </div>
+                        </div>
+                        <div id="asxLosers-tab" class="tab-pane">
+                            <div class="stocks-grid" id="asxLosersGrid">
+                                <div class="loading">Loading ASX top losers...</div>
+                            </div>
+                        </div>
+                        <div id="majorAsx-tab" class="tab-pane">
+                            <div class="stocks-grid" id="majorAsxGrid">
+                                <div class="loading">Loading major ASX stocks...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- News Section -->
             <section class="news-section">
                 <div class="news-header">

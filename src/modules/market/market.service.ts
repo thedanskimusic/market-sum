@@ -47,4 +47,13 @@ export class MarketService {
   async getTopLosers(limit: number = 10): Promise<StockPrice[]> {
     return this.realMarketService.getRealTopLosers(limit);
   }
+
+  async getAustralianMarketData(): Promise<{
+    asxIndices: MarketIndex[];
+    topAsxGainers: StockPrice[];
+    topAsxLosers: StockPrice[];
+    majorAsxStocks: StockPrice[];
+  }> {
+    return this.realMarketService.getAustralianMarketData();
+  }
 }

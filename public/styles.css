@@ -522,3 +522,78 @@ section h2 i {
     border: 1px solid #c3e6cb;
     margin: 1rem 0;
 }
+
+/* Australian Market Section */
+.australian-market {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 12px;
+    padding: 2rem;
+    margin: 2rem 0;
+    border: 2px solid #ffc107;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.australian-market h2 {
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.australian-market h2 i {
+    color: #ffc107;
+}
+
+.australian-indices {
+    margin-bottom: 2rem;
+}
+
+.australian-indices h3 {
+    color: #495057;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.australian-performance {
+    margin-top: 2rem;
+}
+
+.index-card.australian {
+    border-left: 4px solid #ffc107;
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+}
+
+.index-card.australian .index-name {
+    color: #856404;
+}
+
+.stock-card.australian {
+    border-left: 4px solid #ffc107;
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+}
+
+.stock-card.australian .stock-symbol {
+    color: #856404;
+}
+
+.flag {
+    font-size: 1.2em;
+    margin-right: 0.5rem;
+}
+
+/* Australian tab styling */
+.australian-performance .tab-btn {
+    background: #ffc107;
+    color: #212529;
+    border: 1px solid #e0a800;
+}
+
+.australian-performance .tab-btn:hover {
+    background: #e0a800;
+}
+
+.australian-performance .tab-btn.active {
+    background: #d39e00;
+    border-color: #c69500;
+}
