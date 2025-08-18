@@ -17,7 +17,7 @@ async function bootstrap() {
 
   // Enable CORS
   app.enableCors({
-    origin: configService.get('cors.origin') || 'http://localhost:3000',
+    origin: configService.get('cors.origin') || '*',
     credentials: true,
   });
 
@@ -58,7 +58,7 @@ async function bootstrap() {
   const port = configService.get('app.port');
   await app.listen(port);
 
-  console.log(`🚀 Market Summary API is running on: http://localhost:${port}`);
+  console.log(`🚀 Market Summary API is running on port: ${port}`);
   console.log(`📚 API Documentation: http://localhost:${port}/api/docs`);
 }
 
