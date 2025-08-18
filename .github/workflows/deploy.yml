@@ -16,12 +16,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: 'Verify Dockerfile'
-        run: |
-          ls -la
-          cat Dockerfile
-          echo "Dockerfile verification complete"
-
       - name: 'Authenticate to Google Cloud'
         id: auth
         uses: 'google-github-actions/auth@v2'
@@ -33,16 +27,6 @@ jobs:
         with:
           project_id: market-sum
 
-      - name: 'Verify authentication'
-        run: |
-          gcloud auth list
-          gcloud config get-value project
-          gcloud config get-value account
-
-      - name: 'Check service account permissions'
-        run: |
-          gcloud projects get-iam-policy market-sum --flatten="bindings[].members" --filter="bindings.members:github-actions-deployer@market-sum.iam.gserviceaccount.com" --format="table(bindings.role)"
-
       - name: 'Deploy to Cloud Run'
         uses: 'google-github-actions/deploy-cloudrun@v2'
         with:
@@ -50,7 +34,3 @@ jobs:
           region: australia-southeast1
           source: .
           env_vars: PORT=8080
-          memory: 512Mi
-          cpu: 1
-          concurrency: 80
-          timeout: 300
