@@ -1,5 +1,5 @@
 // API Configuration
-const API_BASE_URL = 'http://localhost:3000/api/v1';
+const API_BASE_URL = window.location.origin + '/api/v1';
 
 // Global state
 let currentNewsCategory = 'all';

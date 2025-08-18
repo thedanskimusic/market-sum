@@ -31,7 +31,7 @@ export default () => ({
     file: process.env.LOG_FILE || 'logs/app.log',
   },
   cors: {
-    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+    origin: process.env.CORS_ORIGIN || '*',
   },
   websocket: {
     port: parseInt(process.env.WS_PORT || '3001', 10),
