@@ -308,6 +308,21 @@ section h2 i {
     border-color: #3498db;
 }
 
+.filter-btn.australian {
+    background: #ffc107;
+    color: #212529;
+    border: 1px solid #e0a800;
+}
+
+.filter-btn.australian:hover {
+    background: #e0a800;
+}
+
+.filter-btn.australian.active {
+    background: #d39e00;
+    border-color: #c69500;
+}
+
 .news-grid {
     display: grid;
     gap: 1rem;
