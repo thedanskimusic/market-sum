@@ -97,4 +97,12 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 
-- Auto deploy to GCP -
+- Auto deploy to GCP - Not working through Github actions 
+
+## Manual depploy to GCP
+
+gcloud auth login
+
+gcloud config set project market-sum
+
+gcloud run deploy market-sum-api --source . --region=australia-southeast1 --allow-unauthenticated
