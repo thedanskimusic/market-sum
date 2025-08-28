@@ -20,6 +20,17 @@ export class AuthController {
     // The actual authentication happens in the GoogleStrategy
   }
 
+  @Get('config')
+  @ApiOperation({ summary: 'Get OAuth configuration (for debugging)' })
+  async getConfig() {
+    return {
+      clientId: process.env.GOOGLE_CLIENT_ID ? 'Set' : 'Not set',
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET ? 'Set' : 'Not set',
+      callbackUrl: process.env.GOOGLE_CALLBACK_URL,
+      frontendUrl: process.env.FRONTEND_URL,
+    };
+  }
+
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
   @ApiOperation({ summary: 'Google OAuth callback' })
@@ -33,7 +44,7 @@ export class AuthController {
 
     // For development, redirect to frontend with token
     // In production, you might want to set a secure cookie instead
-    const redirectUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/auth/callback?token=${result.access_token}`;
+    const redirectUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/auth/callback.html?token=${result.access_token}`;
     
     return res.redirect(redirectUrl);
   }
@@ -69,7 +80,7 @@ export class AuthController {
   async logout(@Res() res: Response) {
     // In a more complete implementation, you'd invalidate the token
     // For now, we'll just redirect to the frontend
-    const redirectUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/auth/logout`;
+    const redirectUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/auth/logout.html`;
     res.redirect(redirectUrl);
   }
 }

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logged Out - Market Summary</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .logout-container {
+            max-width: 500px;
+            margin: 100px auto;
+            padding: 40px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .logout-icon {
+            font-size: 64px;
+            color: #6b7280;
+            margin-bottom: 20px;
+        }
+        
+        .logout-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+        
+        .logout-subtitle {
+            color: #6b7280;
+            margin-bottom: 30px;
+        }
+        
+        .login-btn {
+            display: inline-block;
+            background: #2563eb;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            margin-top: 20px;
+            transition: background-color 0.2s;
+        }
+        
+        .login-btn:hover {
+            background: #1d4ed8;
+        }
+        
+        .dashboard-btn {
+            display: inline-block;
+            background: #6b7280;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            margin-top: 10px;
+            margin-left: 10px;
+            transition: background-color 0.2s;
+        }
+        
+        .dashboard-btn:hover {
+            background: #4b5563;
+        }
+    </style>
+</head>
+<body>
+    <div class="logout-container">
+        <div class="logout-icon">
+            <i class="fas fa-sign-out-alt"></i>
+        </div>
+        
+        <div class="logout-title">Successfully Logged Out</div>
+        <div class="logout-subtitle">You have been signed out of your account.</div>
+        
+        <div>
+            <a href="/auth.html" class="login-btn">
+                <i class="fas fa-sign-in-alt"></i> Sign In Again
+            </a>
+            <a href="/" class="dashboard-btn">
+                <i class="fas fa-chart-line"></i> Go to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Clear any stored authentication data
+        localStorage.removeItem('authToken');
+        
+        // Auto-redirect to login page after 5 seconds
+        setTimeout(() => {
+            window.location.href = '/auth.html';
+        }, 5000);
+    </script>
+</body>
+</html>

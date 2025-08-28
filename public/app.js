@@ -398,3 +398,74 @@ window.showAustralianTab = showAustralianTab;
 window.filterNews = filterNews;
 window.searchStock = searchStock;
 window.handleStockSearch = handleStockSearch;
+
+// Authentication functions
+function checkAuthStatus() {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+        // Verify token with backend
+        fetch('/api/v1/auth/profile', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Token invalid');
+            }
+        })
+        .then(user => {
+            showUserInfo(user);
+        })
+        .catch(error => {
+            console.log('Token invalid, showing login');
+            localStorage.removeItem('authToken');
+            showLogin();
+        });
+    } else {
+        showLogin();
+    }
+}
+
+function showLogin() {
+    document.getElementById('loginBtn').style.display = 'block';
+    document.getElementById('userInfo').style.display = 'none';
+}
+
+function showUserInfo(user) {
+    document.getElementById('loginBtn').style.display = 'none';
+    document.getElementById('userInfo').style.display = 'flex';
+    
+    document.getElementById('userNameHeader').textContent = user.firstName;
+    if (user.picture) {
+        document.getElementById('userAvatarHeader').src = user.picture;
+    }
+}
+
+function goToAuth() {
+    window.location.href = '/auth.html';
+}
+
+function logout() {
+    localStorage.removeItem('authToken');
+    fetch('/api/v1/auth/logout', {
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
+    })
+    .finally(() => {
+        showLogin();
+        window.location.reload();
+    });
+}
+
+// Check auth status on page load
+document.addEventListener('DOMContentLoaded', () => {
+    checkAuthStatus();
+});
+
+// Global auth functions
+window.goToAuth = goToAuth;
+window.logout = logout;
