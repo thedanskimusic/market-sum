@@ -122,6 +122,7 @@ A real-time market summary application that aggregates data from various financi
 - [ ] Set up monitoring and logging
 - [ ] Implement backup strategies
 - [ ] Configure SSL certificates
+- [x] **Updated to use Cloudflare Tunnel** instead of ngrok for local development
 
 ### Performance & Scalability
 - [ ] Implement caching strategies
@@ -199,6 +200,7 @@ A real-time market summary application that aggregates data from various financi
 - Leverage NestJS dependency injection for better testability
 - Use NestJS interceptors for logging and monitoring
 - Consider using NestJS microservices for future scalability
+- **Development Tunnel**: Using Cloudflare Tunnel instead of ngrok for better reliability and no account bans
 
 ## 🎉 **MAJOR ACCOMPLISHMENTS**
 
