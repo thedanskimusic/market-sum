@@ -126,10 +126,17 @@
             border-radius: 6px;
             cursor: pointer;
             font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
         
         .logout-btn:hover {
             background: #dc2626;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
         }
         
         .dashboard-link {
@@ -154,8 +161,9 @@
         </div>
         
         <div id="loginSection">
-            <a href="/api/v1/auth/google" class="google-login-btn">
-                <i class="fab fa-google"></i>
+            <a href="/api/v1/auth/google" class="google-login-btn" 
+               aria-label="Sign in with your Google account" title="Sign in with your Google account">
+                <i class="fab fa-google" aria-hidden="true"></i>
                 Sign in with Google
             </a>
         </div>
@@ -165,12 +173,14 @@
                 <img id="userAvatar" class="user-avatar" src="" alt="User Avatar">
                 <div class="user-name" id="userName"></div>
                 <div class="user-email" id="userEmail"></div>
-                <button class="logout-btn" onclick="logout()">
-                    <i class="fas fa-sign-out-alt"></i> Sign Out
+                <button class="logout-btn" onclick="logout()" 
+                        aria-label="Sign out of your account" title="Sign out of your account">
+                    <i class="fas fa-sign-out-alt" aria-hidden="true"></i> Sign Out
                 </button>
             </div>
-            <a href="/" class="dashboard-link">
-                <i class="fas fa-chart-line"></i> Go to Dashboard
+            <a href="/" class="dashboard-link" 
+               aria-label="Go to market dashboard" title="Go to market dashboard">
+                <i class="fas fa-chart-line" aria-hidden="true"></i> Go to Dashboard
             </a>
         </div>
         

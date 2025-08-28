@@ -301,16 +301,19 @@ function showTab(tabName) {
         pane.classList.remove('active');
     });
     
-    // Remove active class from all tab buttons
+    // Remove active class from all tab buttons and update ARIA
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.classList.remove('active');
+        btn.setAttribute('aria-selected', 'false');
     });
     
     // Show selected tab pane
     document.getElementById(`${tabName}-tab`).classList.add('active');
     
-    // Add active class to clicked button
-    event.target.classList.add('active');
+    // Add active class to clicked button and update ARIA
+    const clickedButton = event.target.closest('.tab-btn');
+    clickedButton.classList.add('active');
+    clickedButton.setAttribute('aria-selected', 'true');
 }
 
 function showAustralianTab(tabName) {
@@ -319,16 +322,19 @@ function showAustralianTab(tabName) {
         pane.classList.remove('active');
     });
     
-    // Remove active class from all Australian tab buttons
+    // Remove active class from all Australian tab buttons and update ARIA
     document.querySelectorAll('.australian-performance .tab-btn').forEach(btn => {
         btn.classList.remove('active');
+        btn.setAttribute('aria-selected', 'false');
     });
     
     // Show selected tab pane
     document.getElementById(`${tabName}-tab`).classList.add('active');
     
-    // Add active class to clicked button
-    event.target.classList.add('active');
+    // Add active class to clicked button and update ARIA
+    const clickedButton = event.target.closest('.tab-btn');
+    clickedButton.classList.add('active');
+    clickedButton.setAttribute('aria-selected', 'true');
 }
 
 function filterNews(category) {

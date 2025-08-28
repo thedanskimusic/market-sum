@@ -18,23 +18,28 @@
                     <h1>Market Summary</h1>
                 </div>
                 <div class="header-actions">
-                    <button class="refresh-btn" onclick="refreshAllData()">
-                        <i class="fas fa-sync-alt"></i>
+                    <button class="refresh-btn" onclick="refreshAllData()" 
+                            aria-label="Refresh all market data" title="Refresh all market data">
+                        <i class="fas fa-sync-alt" aria-hidden="true"></i>
                         Refresh
                     </button>
                     <div class="last-updated">
                         Last updated: <span id="lastUpdated">--</span>
                     </div>
                     <div class="auth-actions">
-                        <button id="loginBtn" class="login-btn" onclick="goToAuth()" style="display: none;">
-                            <i class="fas fa-sign-in-alt"></i>
+                        <button id="loginBtn" class="login-btn" onclick="goToAuth()" style="display: none;" 
+                                aria-label="Sign in to your account" title="Sign in to your account">
+                            <i class="fas fa-sign-in-alt" aria-hidden="true"></i>
                             Sign In
                         </button>
-                        <div id="userInfo" class="user-info-header" style="display: none;">
-                            <img id="userAvatarHeader" class="user-avatar-small" src="" alt="User">
-                            <span id="userNameHeader"></span>
-                            <button class="logout-btn-small" onclick="logout()">
-                                <i class="fas fa-sign-out-alt"></i>
+                        <div id="userInfo" class="user-info-header" style="display: none;" 
+                             role="status" aria-label="User account information">
+                            <img id="userAvatarHeader" class="user-avatar-small" src="" alt="User profile picture">
+                            <span id="userNameHeader" aria-label="Current user name"></span>
+                            <button class="logout-btn-small" onclick="logout()" 
+                                    aria-label="Sign out of your account" title="Sign out of your account">
+                                <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+                                <span>Sign Out</span>
                             </button>
                         </div>
                     </div>
@@ -54,15 +59,18 @@
 
             <!-- Stock Performance Section -->
             <section class="stock-performance">
-                <div class="performance-tabs">
-                    <button class="tab-btn active" onclick="showTab('gainers')">
-                        <i class="fas fa-arrow-up"></i> Top Gainers
+                <div class="performance-tabs" role="tablist" aria-label="Stock performance categories">
+                    <button class="tab-btn active" onclick="showTab('gainers')" 
+                            role="tab" aria-selected="true" aria-label="View top gaining stocks">
+                        <i class="fas fa-arrow-up" aria-hidden="true"></i> Top Gainers
                     </button>
-                    <button class="tab-btn" onclick="showTab('losers')">
-                        <i class="fas fa-arrow-down"></i> Top Losers
+                    <button class="tab-btn" onclick="showTab('losers')" 
+                            role="tab" aria-selected="false" aria-label="View top losing stocks">
+                        <i class="fas fa-arrow-down" aria-hidden="true"></i> Top Losers
                     </button>
-                    <button class="tab-btn" onclick="showTab('active')">
-                        <i class="fas fa-chart-bar"></i> Most Active
+                    <button class="tab-btn" onclick="showTab('active')" 
+                            role="tab" aria-selected="false" aria-label="View most active stocks">
+                        <i class="fas fa-chart-bar" aria-hidden="true"></i> Most Active
                     </button>
                 </div>
                 
@@ -99,15 +107,18 @@
 
                 <!-- Australian Stock Performance -->
                 <div class="australian-performance">
-                    <div class="performance-tabs">
-                        <button class="tab-btn active" onclick="showAustralianTab('asxGainers')">
-                            <i class="fas fa-arrow-up"></i> ASX Top Gainers
+                    <div class="performance-tabs" role="tablist" aria-label="Australian market categories">
+                        <button class="tab-btn active" onclick="showAustralianTab('asxGainers')" 
+                                role="tab" aria-selected="true" aria-label="View ASX top gaining stocks">
+                            <i class="fas fa-arrow-up" aria-hidden="true"></i> ASX Top Gainers
                         </button>
-                        <button class="tab-btn" onclick="showAustralianTab('asxLosers')">
-                            <i class="fas fa-arrow-down"></i> ASX Top Losers
+                        <button class="tab-btn" onclick="showAustralianTab('asxLosers')" 
+                                role="tab" aria-selected="false" aria-label="View ASX top losing stocks">
+                            <i class="fas fa-arrow-down" aria-hidden="true"></i> ASX Top Losers
                         </button>
-                        <button class="tab-btn" onclick="showAustralianTab('majorAsx')">
-                            <i class="fas fa-star"></i> Major ASX Stocks
+                        <button class="tab-btn" onclick="showAustralianTab('majorAsx')" 
+                                role="tab" aria-selected="false" aria-label="View major ASX stocks">
+                            <i class="fas fa-star" aria-hidden="true"></i> Major ASX Stocks
                         </button>
                     </div>
                     
@@ -135,12 +146,17 @@
             <section class="news-section">
                 <div class="news-header">
                     <h2><i class="fas fa-newspaper"></i> Latest News</h2>
-                    <div class="news-filters">
-                        <button class="filter-btn active" onclick="filterNews('all')">All</button>
-                        <button class="filter-btn" onclick="filterNews('business')">Business</button>
-                        <button class="filter-btn" onclick="filterNews('technology')">Technology</button>
-                        <button class="filter-btn" onclick="filterNews('markets')">Markets</button>
-                        <button class="filter-btn australian" onclick="filterNews('australian')">🇦🇺 Australian</button>
+                    <div class="news-filters" role="group" aria-label="News category filters">
+                        <button class="filter-btn active" onclick="filterNews('all')" 
+                                aria-label="Show all news articles">All</button>
+                        <button class="filter-btn" onclick="filterNews('business')" 
+                                aria-label="Show business news articles">Business</button>
+                        <button class="filter-btn" onclick="filterNews('technology')" 
+                                aria-label="Show technology news articles">Technology</button>
+                        <button class="filter-btn" onclick="filterNews('markets')" 
+                                aria-label="Show market news articles">Markets</button>
+                        <button class="filter-btn australian" onclick="filterNews('australian')" 
+                                aria-label="Show Australian news articles">🇦🇺 Australian</button>
                     </div>
                 </div>
                 <div class="news-grid" id="newsGrid">
@@ -157,11 +173,14 @@
                         id="stockSearch" 
                         placeholder="Enter stock symbol (e.g., AAPL, MSFT, GOOGL)"
                         onkeypress="handleStockSearch(event)"
+                        aria-label="Enter stock symbol to search"
+                        aria-describedby="stockSearchHelp"
                     >
-                    <button onclick="searchStock()">
-                        <i class="fas fa-search"></i>
+                    <button onclick="searchStock()" aria-label="Search for stock information">
+                        <i class="fas fa-search" aria-hidden="true"></i>
                     </button>
                 </div>
+                <div id="stockSearchHelp" class="sr-only">Press Enter to search for stock information</div>
                 <div id="stockResult" class="stock-result"></div>
             </section>
         </main>
