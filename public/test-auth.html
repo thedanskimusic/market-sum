@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication Test - Market Summary</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .test-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+        }
+        
+        .test-section h3 {
+            margin-bottom: 15px;
+            color: #1f2937;
+            font-size: 18px;
+        }
+        
+        .test-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        
+        .test-btn:hover {
+            background: #1d4ed8;
+        }
+        
+        .test-btn.danger {
+            background: #ef4444;
+        }
+        
+        .test-btn.danger:hover {
+            background: #dc2626;
+        }
+        
+        .test-result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+        }
+        
+        .test-result.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+        
+        .test-result.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+        
+        .test-result.info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #bfdbfe;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-indicator.authenticated {
+            background: #10b981;
+        }
+        
+        .status-indicator.unauthenticated {
+            background: #ef4444;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1><i class="fas fa-shield-alt"></i> Authentication Test</h1>
+        <p>This page helps you test the Google OAuth authentication flow.</p>
+        
+        <div class="test-section">
+            <h3>Current Status</h3>
+            <div id="currentStatus">
+                <span class="status-indicator unauthenticated"></span>
+                <span>Checking authentication status...</span>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>Authentication Actions</h3>
+            <button class="test-btn" onclick="testLogin()">
+                <i class="fas fa-sign-in-alt"></i> Test Login
+            </button>
+            <button class="test-btn" onclick="testProfile()">
+                <i class="fas fa-user"></i> Test Profile API
+            </button>
+            <button class="test-btn danger" onclick="testLogout()">
+                <i class="fas fa-sign-out-alt"></i> Test Logout
+            </button>
+            <button class="test-btn" onclick="clearToken()">
+                <i class="fas fa-trash"></i> Clear Token
+            </button>
+        </div>
+        
+        <div class="test-section">
+            <h3>Test Results</h3>
+            <div id="testResults"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>Quick Links</h3>
+            <a href="/" class="test-btn">
+                <i class="fas fa-chart-line"></i> Go to Dashboard
+            </a>
+            <a href="/auth.html" class="test-btn">
+                <i class="fas fa-key"></i> Auth Page
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function showResult(type, message) {
+            const resultsDiv = document.getElementById('testResults');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result ${type}`;
+            resultDiv.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            resultsDiv.appendChild(resultDiv);
+            resultsDiv.scrollTop = resultsDiv.scrollHeight;
+        }
+        
+        function updateStatus(isAuthenticated, message) {
+            const statusDiv = document.getElementById('currentStatus');
+            const indicator = statusDiv.querySelector('.status-indicator');
+            const text = statusDiv.querySelector('span:last-child');
+            
+            if (isAuthenticated) {
+                indicator.className = 'status-indicator authenticated';
+                text.textContent = `Authenticated: ${message}`;
+            } else {
+                indicator.className = 'status-indicator unauthenticated';
+                text.textContent = `Not authenticated: ${message}`;
+            }
+        }
+        
+        function checkAuthStatus() {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                updateStatus(false, 'No token found');
+                return;
+            }
+            
+            fetch('/api/v1/auth/profile', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+            })
+            .then(user => {
+                updateStatus(true, `${user.firstName} ${user.lastName} (${user.email})`);
+                showResult('success', `Profile loaded: ${JSON.stringify(user, null, 2)}`);
+            })
+            .catch(error => {
+                updateStatus(false, `Token invalid: ${error.message}`);
+                showResult('error', `Profile check failed: ${error.message}`);
+                localStorage.removeItem('authToken');
+            });
+        }
+        
+        function testLogin() {
+            showResult('info', 'Redirecting to Google OAuth...');
+            window.location.href = '/api/v1/auth/google';
+        }
+        
+        function testProfile() {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                showResult('error', 'No token available. Please login first.');
+                return;
+            }
+            
+            showResult('info', 'Testing profile API...');
+            fetch('/api/v1/auth/profile', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+            })
+            .then(user => {
+                showResult('success', `Profile API test successful:\n${JSON.stringify(user, null, 2)}`);
+            })
+            .catch(error => {
+                showResult('error', `Profile API test failed: ${error.message}`);
+            });
+        }
+        
+        function testLogout() {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                showResult('error', 'No token available to logout.');
+                return;
+            }
+            
+            showResult('info', 'Testing logout...');
+            fetch('/api/v1/auth/logout', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            .then(response => {
+                showResult('success', `Logout successful: HTTP ${response.status}`);
+                localStorage.removeItem('authToken');
+                checkAuthStatus();
+            })
+            .catch(error => {
+                showResult('error', `Logout failed: ${error.message}`);
+            });
+        }
+        
+        function clearToken() {
+            localStorage.removeItem('authToken');
+            showResult('info', 'Token cleared from localStorage');
+            checkAuthStatus();
+        }
+        
+        // Handle OAuth callback
+        function handleCallback() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+            const error = urlParams.get('error');
+            
+            if (error) {
+                showResult('error', `OAuth error: ${error}`);
+                return;
+            }
+            
+            if (token) {
+                localStorage.setItem('authToken', token);
+                showResult('success', 'OAuth callback successful! Token stored.');
+                checkAuthStatus();
+                
+                // Clean up URL
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+                    // Check if this is a callback page
+        if (window.location.pathname === '/auth/callback.html' || window.location.search.includes('token=')) {
+            handleCallback();
+        } else {
+            checkAuthStatus();
+        }
+        });
+    </script>
+</body>
+</html>

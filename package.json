@@ -4,7 +4,7 @@
   "description": "",
   "author": "",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "MIT",
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
@@ -17,7 +17,12 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "clean": "rm -rf dist coverage node_modules package-lock.json yarn.lock",
+    "clean:dist": "rm -rf dist",
+    "clean:coverage": "rm -rf coverage",
+    "clean:modules": "rm -rf node_modules",
+    "clean:lock": "rm -f package-lock.json yarn.lock"
   },
   "dependencies": {
     "@nestjs/cache-manager": "^3.0.1",
@@ -32,10 +37,17 @@
     "@nestjs/throttler": "^6.4.0",
     "@nestjs/websockets": "^11.1.6",
     "@types/axios": "^0.9.36",
+    "@types/passport-google-oauth20": "^2.0.16",
     "axios": "^1.11.0",
+    "bcryptjs": "^3.0.2",
+    "cache-manager": "^7.1.1",
     "cheerio": "^1.1.2",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
+    "keyv": "^5.5.0",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
+    "passport-jwt": "^4.0.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "winston": "^3.17.0"

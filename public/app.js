@@ -301,16 +301,19 @@ function showTab(tabName) {
         pane.classList.remove('active');
     });
     
-    // Remove active class from all tab buttons
+    // Remove active class from all tab buttons and update ARIA
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.classList.remove('active');
+        btn.setAttribute('aria-selected', 'false');
     });
     
     // Show selected tab pane
     document.getElementById(`${tabName}-tab`).classList.add('active');
     
-    // Add active class to clicked button
-    event.target.classList.add('active');
+    // Add active class to clicked button and update ARIA
+    const clickedButton = event.target.closest('.tab-btn');
+    clickedButton.classList.add('active');
+    clickedButton.setAttribute('aria-selected', 'true');
 }
 
 function showAustralianTab(tabName) {
@@ -319,16 +322,19 @@ function showAustralianTab(tabName) {
         pane.classList.remove('active');
     });
     
-    // Remove active class from all Australian tab buttons
+    // Remove active class from all Australian tab buttons and update ARIA
     document.querySelectorAll('.australian-performance .tab-btn').forEach(btn => {
         btn.classList.remove('active');
+        btn.setAttribute('aria-selected', 'false');
     });
     
     // Show selected tab pane
     document.getElementById(`${tabName}-tab`).classList.add('active');
     
-    // Add active class to clicked button
-    event.target.classList.add('active');
+    // Add active class to clicked button and update ARIA
+    const clickedButton = event.target.closest('.tab-btn');
+    clickedButton.classList.add('active');
+    clickedButton.setAttribute('aria-selected', 'true');
 }
 
 function filterNews(category) {
@@ -398,3 +404,74 @@ window.showAustralianTab = showAustralianTab;
 window.filterNews = filterNews;
 window.searchStock = searchStock;
 window.handleStockSearch = handleStockSearch;
+
+// Authentication functions
+function checkAuthStatus() {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+        // Verify token with backend
+        fetch('/api/v1/auth/profile', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Token invalid');
+            }
+        })
+        .then(user => {
+            showUserInfo(user);
+        })
+        .catch(error => {
+            console.log('Token invalid, showing login');
+            localStorage.removeItem('authToken');
+            showLogin();
+        });
+    } else {
+        showLogin();
+    }
+}
+
+function showLogin() {
+    document.getElementById('loginBtn').style.display = 'block';
+    document.getElementById('userInfo').style.display = 'none';
+}
+
+function showUserInfo(user) {
+    document.getElementById('loginBtn').style.display = 'none';
+    document.getElementById('userInfo').style.display = 'flex';
+    
+    document.getElementById('userNameHeader').textContent = user.firstName;
+    if (user.picture) {
+        document.getElementById('userAvatarHeader').src = user.picture;
+    }
+}
+
+function goToAuth() {
+    window.location.href = '/auth.html';
+}
+
+function logout() {
+    localStorage.removeItem('authToken');
+    fetch('/api/v1/auth/logout', {
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
+    })
+    .finally(() => {
+        showLogin();
+        window.location.reload();
+    });
+}
+
+// Check auth status on page load
+document.addEventListener('DOMContentLoaded', () => {
+    checkAuthStatus();
+});
+
+// Global auth functions
+window.goToAuth = goToAuth;
+window.logout = logout;

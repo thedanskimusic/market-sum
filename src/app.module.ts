@@ -8,6 +8,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MarketModule } from '@/modules/market/market.module';
 import { NewsModule } from '@/modules/news/news.module';
+import { AuthModule } from '@/modules/auth/auth.module';
+import { UserModule } from '@/modules/user/user.module';
 import configuration from '@/config/configuration';
 
 @Module({
@@ -30,6 +32,8 @@ import configuration from '@/config/configuration';
     }),
     MarketModule,
     NewsModule,
+    AuthModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [

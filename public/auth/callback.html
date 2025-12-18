@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication Successful - Market Summary</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .callback-container {
+            max-width: 500px;
+            margin: 100px auto;
+            padding: 40px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .success-icon {
+            font-size: 64px;
+            color: #10b981;
+            margin-bottom: 20px;
+        }
+        
+        .callback-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+        
+        .callback-subtitle {
+            color: #6b7280;
+            margin-bottom: 30px;
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #2563eb;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .status-message {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        .status-message.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+        
+        .status-message.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+        
+        .dashboard-btn {
+            display: inline-block;
+            background: #2563eb;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            margin-top: 20px;
+            transition: background-color 0.2s;
+        }
+        
+        .dashboard-btn:hover {
+            background: #1d4ed8;
+        }
+        
+        .user-info {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f9fafb;
+            border-radius: 8px;
+            text-align: left;
+        }
+        
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-bottom: 15px;
+        }
+        
+        .user-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 5px;
+        }
+        
+        .user-email {
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body>
+    <div class="callback-container">
+        <div class="success-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        
+        <div class="callback-title">Authentication Successful!</div>
+        <div class="callback-subtitle">Processing your login...</div>
+        
+        <div id="statusMessage" class="status-message">
+            <span class="loading-spinner"></span>
+            Verifying authentication...
+        </div>
+        
+        <div id="userInfo" class="user-info" style="display: none;">
+            <img id="userAvatar" class="user-avatar" src="" alt="User Avatar">
+            <div class="user-name" id="userName"></div>
+            <div class="user-email" id="userEmail"></div>
+        </div>
+        
+        <a href="/" id="dashboardBtn" class="dashboard-btn" style="display: none;">
+            <i class="fas fa-chart-line"></i> Go to Dashboard
+        </a>
+    </div>
+
+    <script>
+        function showStatus(type, message) {
+            const statusDiv = document.getElementById('statusMessage');
+            statusDiv.className = `status-message ${type}`;
+            statusDiv.innerHTML = message;
+        }
+        
+        function showUserInfo(user) {
+            document.getElementById('userInfo').style.display = 'block';
+            document.getElementById('dashboardBtn').style.display = 'inline-block';
+            
+            document.getElementById('userName').textContent = `${user.firstName} ${user.lastName}`;
+            document.getElementById('userEmail').textContent = user.email;
+            if (user.picture) {
+                document.getElementById('userAvatar').src = user.picture;
+            }
+        }
+        
+        async function handleCallback() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+            const error = urlParams.get('error');
+            
+            if (error) {
+                showStatus('error', `<i class="fas fa-exclamation-triangle"></i> Authentication failed: ${error}`);
+                return;
+            }
+            
+            if (!token) {
+                showStatus('error', '<i class="fas fa-exclamation-triangle"></i> No authentication token received');
+                return;
+            }
+            
+            // Store the token
+            localStorage.setItem('authToken', token);
+            showStatus('success', '<i class="fas fa-check"></i> Token stored successfully!');
+            
+            // Verify the token by getting user profile
+            try {
+                const response = await fetch('/api/v1/auth/profile', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const user = await response.json();
+                    showStatus('success', '<i class="fas fa-check"></i> Authentication verified! Welcome back.');
+                    showUserInfo(user);
+                    
+                    // Auto-redirect to dashboard after 3 seconds
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 3000);
+                } else {
+                    throw new Error('Profile verification failed');
+                }
+            } catch (error) {
+                showStatus('error', `<i class="fas fa-exclamation-triangle"></i> Failed to verify authentication: ${error.message}`);
+                localStorage.removeItem('authToken');
+            }
+        }
+        
+        // Handle the callback when page loads
+        document.addEventListener('DOMContentLoaded', handleCallback);
+    </script>
+</body>
+</html>

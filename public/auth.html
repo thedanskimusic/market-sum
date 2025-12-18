@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication - Market Summary</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .auth-container {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 40px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .auth-logo {
+            margin-bottom: 30px;
+        }
+        
+        .auth-logo i {
+            font-size: 48px;
+            color: #2563eb;
+            margin-bottom: 10px;
+        }
+        
+        .auth-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+        
+        .auth-subtitle {
+            color: #6b7280;
+            margin-bottom: 30px;
+        }
+        
+        .google-login-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 12px 24px;
+            background: #4285f4;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            text-decoration: none;
+        }
+        
+        .google-login-btn:hover {
+            background: #3367d6;
+        }
+        
+        .google-login-btn i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .auth-status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        .auth-status.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+        
+        .auth-status.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+        
+        .auth-status.info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #bfdbfe;
+        }
+        
+        .user-info {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f9fafb;
+            border-radius: 8px;
+            text-align: left;
+        }
+        
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-bottom: 15px;
+        }
+        
+        .user-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 5px;
+        }
+        
+        .user-email {
+            color: #6b7280;
+            margin-bottom: 15px;
+        }
+        
+        .logout-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .logout-btn:hover {
+            background: #dc2626;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+        }
+        
+        .dashboard-link {
+            display: inline-block;
+            margin-top: 15px;
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .dashboard-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-logo">
+            <i class="fas fa-chart-line"></i>
+            <div class="auth-title">Market Summary</div>
+            <div class="auth-subtitle">Sign in to access your dashboard</div>
+        </div>
+        
+        <div id="loginSection">
+            <a href="/api/v1/auth/google" class="google-login-btn" 
+               aria-label="Sign in with your Google account" title="Sign in with your Google account">
+                <i class="fab fa-google" aria-hidden="true"></i>
+                Sign in with Google
+            </a>
+        </div>
+        
+        <div id="userSection" style="display: none;">
+            <div class="user-info">
+                <img id="userAvatar" class="user-avatar" src="" alt="User Avatar">
+                <div class="user-name" id="userName"></div>
+                <div class="user-email" id="userEmail"></div>
+                <button class="logout-btn" onclick="logout()" 
+                        aria-label="Sign out of your account" title="Sign out of your account">
+                    <i class="fas fa-sign-out-alt" aria-hidden="true"></i> Sign Out
+                </button>
+            </div>
+            <a href="/" class="dashboard-link" 
+               aria-label="Go to market dashboard" title="Go to market dashboard">
+                <i class="fas fa-chart-line" aria-hidden="true"></i> Go to Dashboard
+            </a>
+        </div>
+        
+        <div id="authStatus"></div>
+    </div>
+
+    <script>
+        // Check if user is already authenticated
+        function checkAuthStatus() {
+            const token = localStorage.getItem('authToken');
+            if (token) {
+                // Verify token with backend
+                fetch('/api/v1/auth/profile', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Token invalid');
+                    }
+                })
+                .then(user => {
+                    showUserInfo(user);
+                })
+                .catch(error => {
+                    console.log('Token invalid, showing login');
+                    localStorage.removeItem('authToken');
+                    showLogin();
+                });
+            } else {
+                showLogin();
+            }
+        }
+        
+        function showLogin() {
+            document.getElementById('loginSection').style.display = 'block';
+            document.getElementById('userSection').style.display = 'none';
+            showStatus('info', 'Please sign in with your Google account to access the dashboard.');
+        }
+        
+        function showUserInfo(user) {
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('userSection').style.display = 'block';
+            
+            document.getElementById('userName').textContent = `${user.firstName} ${user.lastName}`;
+            document.getElementById('userEmail').textContent = user.email;
+            if (user.picture) {
+                document.getElementById('userAvatar').src = user.picture;
+            }
+            
+            showStatus('success', `Welcome back, ${user.firstName}! You're successfully authenticated.`);
+        }
+        
+        function showStatus(type, message) {
+            const statusDiv = document.getElementById('authStatus');
+            statusDiv.className = `auth-status ${type}`;
+            statusDiv.textContent = message;
+        }
+        
+        function logout() {
+            localStorage.removeItem('authToken');
+            fetch('/api/v1/auth/logout', {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                }
+            })
+            .finally(() => {
+                showLogin();
+                showStatus('info', 'You have been signed out successfully.');
+            });
+        }
+        
+        // Handle OAuth callback
+        function handleCallback() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+            const error = urlParams.get('error');
+            
+            if (error) {
+                showStatus('error', `Authentication failed: ${error}`);
+                return;
+            }
+            
+            if (token) {
+                localStorage.setItem('authToken', token);
+                showStatus('success', 'Authentication successful! Loading your profile...');
+                
+                // Get user profile
+                fetch('/api/v1/auth/profile', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+                .then(response => response.json())
+                .then(user => {
+                    showUserInfo(user);
+                })
+                .catch(error => {
+                    showStatus('error', 'Failed to load user profile');
+                });
+            }
+        }
+        
+        // Check if this is a callback page
+        if (window.location.pathname === '/auth/callback.html') {
+            handleCallback();
+        } else {
+            checkAuthStatus();
+        }
+    </script>
+</body>
+</html>
