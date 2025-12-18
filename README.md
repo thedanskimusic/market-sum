@@ -76,6 +76,9 @@ YAHOO_FINANCE_API_KEY=your_yahoo_finance_api_key
 
 ### 3. Google OAuth Setup
 
+**📘 For detailed setup instructions, see [GCP_OAUTH_SETUP.md](GCP_OAUTH_SETUP.md)**
+
+Quick steps:
 1. **Go to [Google Cloud Console](https://console.cloud.google.com/)**
 2. **Create a new project** or select an existing one
 3. **Enable the Google+ API:**
@@ -85,7 +88,7 @@ YAHOO_FINANCE_API_KEY=your_yahoo_finance_api_key
    - Go to "APIs & Services" > "Credentials"
    - Click "Create Credentials" > "OAuth 2.0 Client IDs"
    - Choose "Web application"
-   - Add authorized redirect URIs (you'll update this after getting ngrok URL)
+   - Add authorized redirect URIs (you'll update this after getting Cloudflare Tunnel URL)
 
 ### 4. Start Development with Cloudflare Tunnel
 
@@ -99,11 +102,20 @@ yarn start:dev
 cloudflared tunnel --url http://localhost:3000
 ```
 
+- Find your URL, which looks something like this
+2025-12-18T02:18:46Z INF +--------------------------------------------------------------------------------------------+
+2025-12-18T02:18:46Z INF |  Your quick Tunnel has been created! Visit it at (it may take some time to be reachable):  |
+2025-12-18T02:18:46Z INF |  https://actors-ooo-guards-assumption.trycloudflare.com                                    |
+2025-12-18T02:18:46Z INF +--------------------------------------------------------------------------------------------+
+
 ### 5. Configure Google OAuth with Cloudflare Tunnel URL
 
 1. **Copy the Cloudflare Tunnel URL** (e.g., `https://abc123.trycloudflare.com`)
 2. **Update Google OAuth settings:**
    - Go back to Google Cloud Console
+   -- Select the project
+   -- APIs & Services > Credentials
+   -- Edit the OAuth 2.0 Client ID
    - Update the redirect URI to: `https://abc123.trycloudflare.com/api/v1/auth/google/callback`
 3. **Update your .env file:**
    ```env
@@ -281,6 +293,7 @@ LOG_LEVEL=debug
 
 ## 📖 Additional Documentation
 
+- [GCP OAuth Setup Guide](GCP_OAUTH_SETUP.md) - **Complete GCP OAuth setup guide (use this for new projects!)**
 - [Authentication Setup Guide](AUTH_SETUP.md) - Detailed OAuth setup
 - [Authentication Summary](AUTH_SUMMARY.md) - Quick reference
 - [Environment Variables](env.example) - Configuration template
